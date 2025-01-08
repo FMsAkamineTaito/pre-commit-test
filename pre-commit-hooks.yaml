@@ -1,0 +1,7 @@
+- id: pr-status-check
+  name: PR Status check
+  description: test
+  entry: bash scripts/check_pr_status.sh
+  language: system
+  always_run: true
+  stages: [pre-marge-commit]
