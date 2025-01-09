@@ -24,6 +24,10 @@ class PRStatusChecker:
 
             # マージメッセージの読み込みと確認
             merge_msg_file = Path(git_dir) / "MERGE_MSG"
+
+            print("###")
+
+            return 1
             if not merge_msg_file.exists():
                 print(f"エラー: マージメッセージファイルが見つかりません: {merge_msg_file}")
                 return 1
