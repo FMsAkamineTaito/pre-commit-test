@@ -78,32 +78,6 @@ check_pr_status() {
 
 # メイン処理
 main() {
-#    MERGE_MSG_PATH="$GIT_DIR/MERGE_MSG"
-#
-#    echo "pr_status_checkerを起動します。"
-#
-#    if [ ! -f "$MERGE_MSG_PATH" ]; then
-#        exit 0
-#    fi
-#
-#    MERGE_MSG=$(cat "$MERGE_MSG_PATH")
-#
-#    if [[ "$MERGE_MSG" =~ Merge[[:space:]]branch[[:space:]]\'(hotfix/|release/|feature/) ]]; then
-#        source_branch=$(get_source_branch "$MERGE_MSG")
-#
-#        if [ $? -eq 0 ]; then
-#            echo "Git Flow マージ操作を検出しました"
-#            echo "マージ元ブランチ: $source_branch"
-#
-#            if ! check_pr_status "$source_branch"; then
-#                echo "Git Flow操作を中断します"
-#                exit 1
-#            fi
-#        fi
-#    fi
-#
-#    exit 0
-# MERGE_MSG の読み取り
 MERGE_MSG_FILE=".git/MERGE_MSG"
 if [[ -f $MERGE_MSG_FILE ]]; then
     MERGE_MSG=$(cat "$MERGE_MSG_FILE")
