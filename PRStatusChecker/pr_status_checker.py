@@ -37,6 +37,8 @@ class PRStatusChecker:
 
             if not merge_msg_file.exists():
                 print(f"エラー: マージメッセージファイルが見つかりません: {merge_msg_file}")
+
+                cls.reset_to_before_merge()
                 return 1
 
             merge_msg = merge_msg_file.read_text()
