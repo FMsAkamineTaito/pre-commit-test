@@ -153,4 +153,4 @@ class PRStatusChecker:
 if __name__ == "__main__":
 
     print("#### pr_status_checker.pyを実行します。")
-    PRStatusChecker.main()
+    PRStatusChecker().main()
