@@ -1,6 +1,6 @@
 - id: pr-status-check
   name: PR Status check
   description: test
-  entry: status-checker
+  entry: pr-status-check
   language: system
   always_run: true

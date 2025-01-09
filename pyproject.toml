@@ -9,7 +9,7 @@ readme = "README.md"
 python = "3.10"
 
 [tool.poetry.scripts]
-status-checker = 'PRStatusChecker.pr_status:SourceCodeChecker.check_source_code'
+pr-status-check = 'PRStatusChecker.pr_status:SourceCodeChecker.check_source_code'
 
 [build-system]
 requires = ["poetry-core"]
