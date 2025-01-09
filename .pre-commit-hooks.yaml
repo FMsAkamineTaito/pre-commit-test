@@ -1,7 +1,6 @@
 - id: pr-status-check
   name: PR Status check
   description: test
-  entry: pr_status_checker.sh
-  language: script
+  entry: pr-status-checker
+  language: python
   always_run: true
-  stages: [pre-merge-commit]
