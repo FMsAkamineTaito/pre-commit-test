@@ -10,7 +10,7 @@ packages = [{ include = "PRStatusChecker" }]
 python = "3.10"
 
 [tool.poetry.scripts]
-pr-status-check = 'PRStatusChecker.pr_status_checker:PRStatusChecker.pr_status_check'
+pr-status-check = 'PRStatusChecker.pr_status_checker:PRStatusChecker'
 
 [build-system]
 requires = ["poetry-core"]
