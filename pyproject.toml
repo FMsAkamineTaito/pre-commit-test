@@ -4,6 +4,7 @@ version = "0.1.0"
 description = ""
 authors = ["AkamineTaito"]
 readme = "README.md"
+packages = [{ include = "PRStatusChecker" }]
 
 [tool.poetry.dependencies]
 python = "3.10"
