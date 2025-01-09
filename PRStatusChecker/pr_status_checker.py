@@ -169,5 +169,7 @@ class PRStatusChecker:
 
     @classmethod
     def reset_to_before_merge(cls):
-        cls._run_command(["git", "-"])
-        cls._run_command(["git", "reset", "-hard"])
+        result = cls._run_command(["git", "reset", "--hard"])
+        print("1" ,result)
+        result = cls._run_command(["git", "-"])
+        print("2" ,result)
