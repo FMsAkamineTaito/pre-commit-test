@@ -1,0 +1,16 @@
+[tool.poetry]
+name = "pre-commit-test"
+version = "0.1.0"
+description = ""
+authors = ["AkamineTaito"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "3.10.11"
+
+[tool.poetry.scripts]
+pr_status_checker = 'scripts.pr_status_checker:main'
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
