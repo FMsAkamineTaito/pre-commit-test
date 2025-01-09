@@ -49,6 +49,7 @@ class PRStatusChecker:
             branch_name = cls._extract_branch_name(merge_msg)
             if not branch_name:
                 print("エラー: マージメッセージからブランチ名を抽出できませんでした")
+                cls.reset_to_before_merge()
                 return 1
 
             # PRのステータスチェック
@@ -61,6 +62,7 @@ class PRStatusChecker:
 
         except Exception as e:
             print(f"予期せぬエラーが発生しました: {e}")
+            cls.reset_to_before_merge()
             return 1
 
     @classmethod
@@ -90,12 +92,14 @@ class PRStatusChecker:
         # GitHub CLIの存在確認
         if subprocess.run(["which", "gh"], capture_output=True).returncode != 0:
             print("エラー: GitHub CLI (gh) がインストールされていません")
+            cls.reset_to_before_merge()
             return False
 
         # 認証状態の確認
         if subprocess.run(["gh", "auth", "status"], capture_output=True).returncode != 0:
             print("エラー: GitHub CLIが認証されていません")
             print("gh auth login を実行してログインしてください")
+            cls.reset_to_before_merge()
             return False
 
         return True
