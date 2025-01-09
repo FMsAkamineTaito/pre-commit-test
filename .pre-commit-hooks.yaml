@@ -4,4 +4,4 @@
   entry: bash scripts/check_pr_status.sh
   language: system
   always_run: true
-  stages: [pre-marge-commit]
+  stages: [pre-merge-commit]
