@@ -27,6 +27,8 @@ class PRStatusChecker:
 
             print("###")
 
+            print("カレントディレクトリ：", os.getcwd())
+
             return 1
             if not merge_msg_file.exists():
                 print(f"エラー: マージメッセージファイルが見つかりません: {merge_msg_file}")
