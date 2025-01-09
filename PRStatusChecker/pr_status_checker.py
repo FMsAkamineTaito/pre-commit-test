@@ -15,6 +15,11 @@ class PRStatusChecker:
         """スクリプトのメインエントリーポイント"""
         print("GitHub PR Checker を開始します...")
 
+        # マージ操作中かどうかを確認
+        if not cls._is_merging():
+            print("現在マージ操作中ではありません。チェックをスキップします。")
+            return 0
+
         # キャッシュディレクトリの作成
         cls.CACHE_DIR.mkdir(parents=True, exist_ok=True)
 
@@ -92,6 +97,16 @@ class PRStatusChecker:
             return False
 
         return True
+
+    @classmethod
+    def _is_merging(cls) -> bool:
+        """マージ操作中かどうかを確認"""
+        try:
+            git_dir = cls._run_command(["git", "rev-parse", "--git-dir"])
+            merge_head_file = Path(git_dir) / "MERGE_HEAD"
+            return merge_head_file.exists()
+        except subprocess.CalledProcessError:
+            return False
 
     @classmethod
     def _check_pr_status(cls, branch_name: str) -> bool:
