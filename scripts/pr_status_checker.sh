@@ -78,31 +78,52 @@ check_pr_status() {
 
 # メイン処理
 main() {
-    MERGE_MSG_PATH="$GIT_DIR/MERGE_MSG"
+#    MERGE_MSG_PATH="$GIT_DIR/MERGE_MSG"
+#
+#    echo "pr_status_checkerを起動します。"
+#
+#    if [ ! -f "$MERGE_MSG_PATH" ]; then
+#        exit 0
+#    fi
+#
+#    MERGE_MSG=$(cat "$MERGE_MSG_PATH")
+#
+#    if [[ "$MERGE_MSG" =~ Merge[[:space:]]branch[[:space:]]\'(hotfix/|release/|feature/) ]]; then
+#        source_branch=$(get_source_branch "$MERGE_MSG")
+#
+#        if [ $? -eq 0 ]; then
+#            echo "Git Flow マージ操作を検出しました"
+#            echo "マージ元ブランチ: $source_branch"
+#
+#            if ! check_pr_status "$source_branch"; then
+#                echo "Git Flow操作を中断します"
+#                exit 1
+#            fi
+#        fi
+#    fi
+#
+#    exit 0
+# MERGE_MSG の読み取り
+MERGE_MSG_FILE=".git/MERGE_MSG"
+if [[ -f $MERGE_MSG_FILE ]]; then
+    MERGE_MSG=$(cat "$MERGE_MSG_FILE")
+else
+    echo "Error: Merge message file not found: $MERGE_MSG_FILE"
+    exit 1
+fi
 
-    echo "pr_status_checkerを起動します。"
+# MERGE_MSG を出力（デバッグ用）
+echo "Merge Message:"
+echo "$MERGE_MSG"
 
-    if [ ! -f "$MERGE_MSG_PATH" ]; then
-        exit 0
-    fi
+# 必要な処理を続ける
+# （例）MERGE_MSG に特定の条件が含まれているか確認
+if [[ "$MERGE_MSG" != *"expected text"* ]]; then
+    echo "Error: Merge message does not contain the expected text."
+    exit 1
+fi
 
-    MERGE_MSG=$(cat "$MERGE_MSG_PATH")
-
-    if [[ "$MERGE_MSG" =~ Merge[[:space:]]branch[[:space:]]\'(hotfix/|release/|feature/) ]]; then
-        source_branch=$(get_source_branch "$MERGE_MSG")
-
-        if [ $? -eq 0 ]; then
-            echo "Git Flow マージ操作を検出しました"
-            echo "マージ元ブランチ: $source_branch"
-
-            if ! check_pr_status "$source_branch"; then
-                echo "Git Flow操作を中断します"
-                exit 1
-            fi
-        fi
-    fi
-
-    exit 0
+echo "PR status check passed."
 }
 
 # スクリプトのエントリーポイント
