@@ -23,13 +23,13 @@ class PRStatusChecker:
             git_dir = cls._run_command(["git", "rev-parse", "--git-dir"])
 
             # マージメッセージの読み込みと確認
-            merge_msg_file = Path(git_dir) / "MERGE_MSG"
+            merge_msg_file = os.getcwd() / Path(git_dir) / "MERGE_MSG"
 
             print("###")
 
             print("カレントディレクトリ：", os.getcwd())
 
-            return 1
+
             if not merge_msg_file.exists():
                 print(f"エラー: マージメッセージファイルが見つかりません: {merge_msg_file}")
                 return 1
