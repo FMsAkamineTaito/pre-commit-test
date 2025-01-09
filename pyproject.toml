@@ -8,6 +8,8 @@ readme = "README.md"
 [tool.poetry.dependencies]
 python = "3.10"
 
+[tool.poetry.scripts]
+status-checker = 'PRStatusChecker.pr_status:SourceCodeChecker.check_source_code'
 
 [build-system]
 requires = ["poetry-core"]
