@@ -2,5 +2,5 @@
   name: PR Status check
   description: test
   entry: pr-status-check
-  language: system
+  language: python
   always_run: true
