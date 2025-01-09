@@ -2,7 +2,7 @@
   name: PR Status check
   description: test
   entry: bash
-  language: script
+  language: system
   always_run: true
   stages: [pre-merge-commit]
   args:
