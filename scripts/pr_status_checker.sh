@@ -80,6 +80,8 @@ check_pr_status() {
 main() {
     MERGE_MSG_PATH="$GIT_DIR/MERGE_MSG"
 
+    echo "pr_status_checkerを起動します。"
+
     if [ ! -f "$MERGE_MSG_PATH" ]; then
         exit 0
     fi
