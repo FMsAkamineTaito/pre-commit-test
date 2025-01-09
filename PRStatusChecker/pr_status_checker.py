@@ -164,3 +164,8 @@ class PRStatusChecker:
         except subprocess.CalledProcessError as e:
             print(f"GitHub CLIコマンドの実行中にエラーが発生: {e}")
             return False
+
+    @classmethod
+    def reset_to_before_merge(cls):
+        cls._run_command(["git", "-"])
+        cls._run_command(["git", "reset", "-hard"])
