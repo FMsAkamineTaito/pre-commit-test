@@ -1,7 +1,7 @@
 - id: pr-status-check
   name: PR Status check
   description: test
-  entry: script/pr_status_checker.sh
+  entry: pr_status_checker.sh
   language: script
   always_run: true
   stages: [pre-merge-commit]
