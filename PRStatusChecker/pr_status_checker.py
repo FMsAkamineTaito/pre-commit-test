@@ -151,5 +151,6 @@ class PRStatusChecker:
             return 1
 
 if __name__ == "__main__":
-    checker = PRStatusChecker()
-    exit(checker.main())
+
+    print("#### pr_status_checker.pyを実行します。")
+    PRStatusChecker.main()
