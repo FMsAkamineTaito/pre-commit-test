@@ -6,4 +6,4 @@
   always_run: true
   stages: [pre-merge-commit]
   args:
-    - scripts/pr_status_checker.sh
+    - ./scripts/pr_status_checker.sh
