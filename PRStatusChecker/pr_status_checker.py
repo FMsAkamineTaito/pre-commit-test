@@ -181,4 +181,5 @@ class PRStatusChecker:
         merge_msg_file = os.getcwd() / Path(git_dir) / "MERGE_MSG"
 
         if merge_msg_file.exists():
-            cls._run_command(["rm", merge_msg_file])
+            with open(merge_msg_file, "w") as f:
+                f.write("")
