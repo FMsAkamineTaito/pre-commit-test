@@ -3,3 +3,4 @@
   description: test
   entry: pr-status-check
   language: python
+  pass_filenames: true
