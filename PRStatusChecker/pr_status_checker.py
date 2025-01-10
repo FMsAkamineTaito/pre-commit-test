@@ -152,7 +152,7 @@ class PRStatusChecker:
 
             failed_checks = [
                 check for check in status_data["statusCheckRollup"]
-                if check["state"] == "FAILURE"
+                if check["conclusion"] == "FAILURE"
             ]
 
             if failed_checks:
@@ -175,5 +175,5 @@ class PRStatusChecker:
     def reset_to_before_merge(cls):
         result = cls._run_command(["git", "reset", "--hard"])
         print("1" ,result)
-        result = cls._run_command(["git", "-"])
+        result = cls._run_command(["git", "checkout", "-"])
         print("2" ,result)
