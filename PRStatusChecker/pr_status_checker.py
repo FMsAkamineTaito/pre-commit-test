@@ -166,7 +166,9 @@ class PRStatusChecker:
 
         commit_author_email_map = {}
         for commit in commits:
+            print("commit")
             for author in commit["authors"]:
+                print("authors")
                 commit_author_email_map[author["name"]] = author["email"]
 
         result = cls._run_command(["gh", "pr", "view", pr_number, "--json", "author"])
