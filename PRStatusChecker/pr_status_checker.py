@@ -122,6 +122,11 @@ class PRStatusChecker:
                 return True
 
             pr_number = prs[0]["number"]
+
+            is_fms_member = cls.is_fms_member(pr_number)
+            if not is_fms_member:
+                return True
+
             print(f"PR #{pr_number} のステータスチェックを確認しています...")
 
             # ステータスチェックの取得
@@ -152,3 +157,23 @@ class PRStatusChecker:
         """差分を破棄して前の作業ブランチに戻る"""
         cls._run_command(["git", "reset", "--hard"])
         cls._run_command(["git", "checkout", "-"])
+
+    @classmethod
+    def is_fms_member(cls, pr_number: str):
+        """PR作成者がFMs社員か判定"""
+        results = cls._run_command(["gh", "pr", "view", pr_number, "--json", "commits"])
+        commits = json.loads(results)["commits"]
+
+        commit_author_email_map = {}
+        for commit in commits:
+            for author in commit["authors"]:
+                commit_author_email_map[author["name"]] = author["email"]
+
+        result = cls._run_command(["gh", "pr", "view", pr_number, "--json", "author"])
+        pr_author = json.loads(result)
+
+        if commit_author_email_map[pr_author] and commit_author_email_map[pr_author].find("@fullmarks.co.jp"):
+            return True
+        else:
+            return False
+
