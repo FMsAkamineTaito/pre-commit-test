@@ -157,16 +157,9 @@ class PRStatusChecker:
         results = cls._run_command(["gh", "pr", "view", pr_number, "--json", "commits"])
         commits = json.loads(results)["commits"]
 
-        commit_author_email_map = {}
+        commit_author_emails = []
         for commit in commits:
             for author in commit["authors"]:
-                commit_author_email_map[author["name"]] = author["email"]
+                commit_author_emails.append(author["email"])
 
-        result = cls._run_command(["gh", "pr", "view", pr_number, "--json", "author"])
-        pr_author = json.loads(result)["author"]["name"] or "anonymous"
-
-        if commit_author_email_map.get(pr_author) and commit_author_email_map[pr_author].find("@fullmarks.co.jp"):
-            return True
-        else:
-            return False
-
+        return all([email for email in commit_author_emails if email.find("@fullmarks.co.jp")])
