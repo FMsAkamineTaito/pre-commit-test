@@ -45,9 +45,10 @@ class PRStatusChecker:
             # PRのステータスチェック
             success = cls._check_pr_status(branch_name)
             if not success:
+                print("\nPRの概要欄を確認後チェックをつけてください。")
                 return 1
 
-            print("\nPRのステータスチェックが完了しました")
+            print("\nPRのステータスはSUCCESSです。Pushします。")
             return 0
 
         except Exception as e:
@@ -134,14 +135,11 @@ class PRStatusChecker:
             status_json = cls._run_command(["gh", "pr", "view", str(pr_number), "--json", "statusCheckRollup"])
             status_data = json.loads(status_json).get("statusCheckRollup", None)
 
-            print("## status data")
-            print(status_data)
             if not status_data:
-                print("## not status data")
                 return True
 
             latest_conclusion = max(status_data, key=lambda x: datetime.fromisoformat(x["completedAt"].replace("Z", ""))).get("conclusion", False)
-            print("## latest conclusion ", latest_conclusion)
+
             return latest_conclusion == "SUCCESS"
 
         except subprocess.CalledProcessError as e:
