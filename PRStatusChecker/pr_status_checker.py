@@ -123,7 +123,7 @@ class PRStatusChecker:
 
             pr_number = prs[0]["number"]
 
-            is_fms_member = cls.is_fms_member(pr_number)
+            is_fms_member = cls.is_fms_member(str(pr_number))
             if not is_fms_member:
                 return True
 
