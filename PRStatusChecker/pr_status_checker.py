@@ -8,7 +8,6 @@ from typing import Optional, Tuple
 
 
 class PRStatusChecker:
-    CACHE_DIR = Path("/tmp/gh_pr_check_cache")
 
     @classmethod
     def check_status(cls) -> int:
@@ -20,20 +19,12 @@ class PRStatusChecker:
             print("現在マージ操作中ではありません。チェックをスキップします。")
             return 0
 
-        # キャッシュディレクトリの作成
-        cls.CACHE_DIR.mkdir(parents=True, exist_ok=True)
-
         try:
             # Gitディレクトリの確認
             git_dir = cls._run_command(["git", "rev-parse", "--git-dir"])
 
             # マージメッセージの読み込みと確認
             merge_msg_file = os.getcwd() / Path(git_dir) / "MERGE_MSG"
-
-            print("###")
-
-            print("カレントディレクトリ：", os.getcwd())
-
 
             if not merge_msg_file.exists():
                 print(f"エラー: マージメッセージファイルが見つかりません: {merge_msg_file}")
@@ -42,8 +33,6 @@ class PRStatusChecker:
                 return 1
 
             merge_msg = merge_msg_file.read_text()
-            print("\nマージメッセージ:")
-            print(merge_msg)
 
             # ブランチ名の抽出
             branch_name = cls._extract_branch_name(merge_msg)
@@ -117,16 +106,6 @@ class PRStatusChecker:
     @classmethod
     def _check_pr_status(cls, branch_name: str) -> bool:
         """PRのステータスをチェック"""
-        # キャッシュファイルのパス
-        repo_id = cls._get_repo_id()
-        cache_file = cls.CACHE_DIR / f"{repo_id}_{branch_name}.cache"
-
-        # キャッシュのチェック
-        if cache_file.exists():
-            print(f"\nキャッシュ: ブランチ '{branch_name}' の結果を再利用します")
-            result = cache_file.read_text().strip()
-            return result == "0"
-
         # GitHub CLIのチェック
         if not cls._check_gh_cli():
             return False
@@ -140,7 +119,6 @@ class PRStatusChecker:
 
             if not prs:
                 print(f"警告: ブランチ {branch_name} のPRが見つかりません")
-                cache_file.write_text("0")
                 return True
 
             pr_number = prs[0]["number"]
@@ -160,11 +138,9 @@ class PRStatusChecker:
                 print("失敗したチェック:")
                 for check in failed_checks:
                     print(f"- {check['context']}: {check['description']}")
-                cache_file.write_text("1")
                 return False
 
             print("\nすべてのステータスチェックがパスしています")
-            cache_file.write_text("0")
             return True
 
         except subprocess.CalledProcessError as e:
@@ -173,13 +149,6 @@ class PRStatusChecker:
 
     @classmethod
     def reset_to_before_merge(cls):
+        """差分を破棄して前の作業ブランチに戻る"""
         cls._run_command(["git", "reset", "--hard"])
         cls._run_command(["git", "checkout", "-"])
-
-        git_dir = cls._run_command(["git", "rev-parse", "--git-dir"])
-
-        merge_msg_file = os.getcwd() / Path(git_dir) / "MERGE_MSG"
-
-        if merge_msg_file.exists():
-            with open(merge_msg_file, "w") as f:
-                f.write("")

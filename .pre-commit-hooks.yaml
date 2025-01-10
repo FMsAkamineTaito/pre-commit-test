@@ -3,4 +3,4 @@
   description: test
   entry: pr-status-check
   language: python
-  always_run: true
+  pass_filenames: true
