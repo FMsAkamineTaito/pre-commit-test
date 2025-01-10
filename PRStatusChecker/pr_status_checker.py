@@ -3,6 +3,7 @@ import hashlib
 import subprocess
 import json
 import re
+from datetime import datetime
 from pathlib import Path
 from typing import Optional, Tuple
 
@@ -131,22 +132,14 @@ class PRStatusChecker:
 
             # ステータスチェックの取得
             status_json = cls._run_command(["gh", "pr", "view", str(pr_number), "--json", "statusCheckRollup"])
-            status_data = json.loads(status_json)
+            status_data = json.loads(status_json).get("statusCheckRollup", None)
 
-            failed_checks = [
-                check for check in status_data["statusCheckRollup"]
-                if check["conclusion"] == "FAILURE"
-            ]
+            if status_data:
+                return True
 
-            if failed_checks:
-                print(f"\nエラー: PR #{pr_number} のステータスチェックが失敗しています")
-                print("失敗したチェック:")
-                for check in failed_checks:
-                    print(f"- {check['context']}: {check['description']}")
-                return False
-
-            print("\nすべてのステータスチェックがパスしています")
-            return True
+            latest_conclusion = max(status_data, key=lambda x: datetime.fromisoformat(x["completedAt"].replace("Z", "+00:00"))).get("conclusion", True)
+            
+            return latest_conclusion
 
         except subprocess.CalledProcessError as e:
             print(f"GitHub CLIコマンドの実行中にエラーが発生: {e}")
