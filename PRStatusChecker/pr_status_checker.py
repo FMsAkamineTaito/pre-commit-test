@@ -132,13 +132,14 @@ class PRStatusChecker:
 
             # ステータスチェックの取得
             status_json = cls._run_command(["gh", "pr", "view", str(pr_number), "--json", "statusCheckRollup"])
+            print("ステータスjson：",json.loads(status_json).get("statusCheckRollup", None))
             status_data = json.loads(status_json).get("statusCheckRollup", None)
 
             if status_data:
                 return True
 
             latest_conclusion = max(status_data, key=lambda x: datetime.fromisoformat(x["completedAt"].replace("Z", "+00:00"))).get("conclusion", False)
-            
+            print("latest conclusion : ", latest_conclusion)
             return latest_conclusion
 
         except subprocess.CalledProcessError as e:
