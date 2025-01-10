@@ -137,7 +137,7 @@ class PRStatusChecker:
             if status_data:
                 return True
 
-            latest_conclusion = max(status_data, key=lambda x: datetime.fromisoformat(x["completedAt"].replace("Z", "+00:00"))).get("conclusion", True)
+            latest_conclusion = max(status_data, key=lambda x: datetime.fromisoformat(x["completedAt"].replace("Z", "+00:00"))).get("conclusion", False)
             
             return latest_conclusion
 
