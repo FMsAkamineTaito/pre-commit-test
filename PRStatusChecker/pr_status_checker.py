@@ -176,4 +176,9 @@ class PRStatusChecker:
         cls._run_command(["git", "reset", "--hard"])
         cls._run_command(["git", "checkout", "-"])
 
-        cls._run_command(["rm", ".git/MERGE_MSG"])
+        git_dir = cls._run_command(["git", "rev-parse", "--git-dir"])
+
+        merge_msg_file = os.getcwd() / Path(git_dir) / "MERGE_MSG"
+
+        if merge_msg_file.exists():
+            cls._run_command(["rm", merge_msg_file])
