@@ -46,6 +46,8 @@ class PRStatusChecker:
             success = cls._check_pr_status(branch_name)
             if not success:
                 print("\nPRの概要欄を確認後チェックをつけてください。")
+                print("\nPushを中断します。")
+                cls.reset_to_before_merge()
                 return 1
 
             print("\nPRのステータスはSUCCESSです。Pushします。")
