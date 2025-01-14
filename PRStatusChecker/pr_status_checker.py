@@ -154,14 +154,16 @@ class PRStatusChecker:
         print("## マージ前の状態に戻します")
         print("###" ,cls._run_command(["cat", ".git/MERGE_MSG"]))
 
-        cls._run_command(["git", "merge", "--abort"])
+        cls._run_command(["rm", "-rf", ".git/MERGE_HEAD"])
+        cls._run_command(["rm", "-rf", ".git/MERGE_MSG"])
+        cls._run_command(["rm", "-rf", ".git/MERGE_MODE"])
 
         cls._run_command(["git", "checkout", "-"])
 
     @classmethod
     def is_fms_member(cls, pr_number: str):
         """PR作成者がFMs社員か判定"""
-        results = cls._run_command(["gh", "pr", "view", pr_number, "--json", "commits"])
+        results = cls._run_command(["gh", "pr", "view", pr_number, "--json", "commits"])        
         commits = json.loads(results)["commits"]
 
         commit_author_emails = []
