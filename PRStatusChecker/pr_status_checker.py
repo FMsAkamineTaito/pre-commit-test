@@ -158,9 +158,10 @@ class PRStatusChecker:
         cls._run_command(["rm", "-rf", ".git/MERGE_MSG"])
         cls._run_command(["rm", "-rf", ".git/MERGE_MODE"])
 
-        print("###" ,cls._run_command(["ls", ".git/"]))
-        
-        cls._run_command(["git", "merge", "--abort"])
+        print("### after #### ")
+        print(cls._run_command(["ls", ".git/"]))
+
+        cls._run_command(["git", "reset", "--merge"])
 
         # cls._run_command(["git", "checkout", "-"])
 
