@@ -152,9 +152,9 @@ class PRStatusChecker:
     def reset_to_before_merge(cls):
         """差分を破棄して前の作業ブランチに戻る"""
         print("## マージ前の状態に戻します")
-        print("###" ,cls._run_command(["ls", ".git/"]))
         
         cls._run_command(["git", "reset", "--merge"])
+        print("###" ,cls._run_command(["ls", ".git/"]))
 
         cls._run_command(["rm", "-rf", ".git/MERGE_HEAD"])
         cls._run_command(["rm", "-rf", ".git/MERGE_MSG"])
