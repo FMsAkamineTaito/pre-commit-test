@@ -158,7 +158,7 @@ class PRStatusChecker:
         if (os.getcwd() / Path(cls._run_command(["git", "rev-parse", "--git-dir"])) / "MERGE_MODE").exists():
             cls._run_command(["rm", "-rf", ".git/MERGE_MODE"])
 
-        cls._run_command(["git", "merge","--abort"])
+        # cls._run_command(["git", "merge","--abort"])
         cls._run_command(["git", "reset", "--hard"])
         cls._run_command(["git", "checkout", "-"])
 
