@@ -151,15 +151,20 @@ class PRStatusChecker:
     @classmethod
     def reset_to_before_merge(cls):
         """差分を破棄して前の作業ブランチに戻る"""
-        print("## 元のブランチに戻ります")
-        result = cls._run_command(["git", "merge", "--abort"])
-        print("result :", result)
-
-        files = [Path("/Users/akaminetaito/Desktop/test/.git/MERGE_HEAD"), Path("/Users/akaminetaito/Desktop/test/.git/MERGE_MSG"),Path("/Users/akaminetaito/Desktop/test/.git/MERGE_MODE")]
-        for file in files:
-            cls._run_command(["rm", "-rf", str(file)])
-
-        cls._run_command(["git", "checkout", "-"])
+        print("## マージ前の状態に戻します")
+        try:
+            # まず現在のブランチ名を取得
+            current_branch = cls._run_command(["git", "rev-parse", "--abbrev-ref", "HEAD"])
+            
+            # HEADの位置を強制的にマージ前の状態に戻す
+            cls._run_command(["git", "reset", "--hard", "HEAD^"])
+            
+            # インデックスとワーキングディレクトリをクリーンな状態に
+            cls._run_command(["git", "clean", "-fd"])
+            
+            print(f"ブランチ {current_branch} のマージ前の状態に戻りました")
+        except subprocess.CalledProcessError as e:
+            print(f"リセット中にエラーが発生しました: {e}")
 
     @classmethod
     def is_fms_member(cls, pr_number: str):
