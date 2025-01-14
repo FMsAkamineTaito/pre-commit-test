@@ -152,19 +152,6 @@ class PRStatusChecker:
     def reset_to_before_merge(cls):
         """差分を破棄して前の作業ブランチに戻る"""
         cls._run_command(["git", "reset", "--merge"])
-
-        if Path(".git/MERGE_MSG").exists():
-            print("MERGE_MSGを削除します。")
-            cls._run_command(["rm", "-rf", ".git/MERGE_MSG"])
-        if Path(".git/MERGE_HEAD").exists():
-            print("MERGE_HEADを削除します。")
-            cls._run_command(["rm", "-rf", ".git/MERGE_HEAD"])
-        if Path(".git/MERGE_MODE").exists():
-            print("MERGE_MODEを削除します。")
-            cls._run_command(["rm", "-rf", ".git/MERGE_MODE"])
-        
-        cls._run_command(["git", "reset","--hard"])
-
         cls._run_command(["git", "checkout", "-"])
 
     @classmethod
