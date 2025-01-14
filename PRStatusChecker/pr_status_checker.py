@@ -154,6 +154,8 @@ class PRStatusChecker:
         print("## マージ前の状態に戻します")
         try:
             cls._run_command(["git", "checkout", "-"])
+
+            cls._run_command(["git", "merge", "--abort"])
              
             cls._run_command(["git", "checkout", "-"])
             
