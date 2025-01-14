@@ -153,16 +153,13 @@ class PRStatusChecker:
         """差分を破棄して前の作業ブランチに戻る"""
         print("## マージ前の状態に戻します")
         try:
-            # まず現在のブランチ名を取得
-            current_branch = cls._run_command(["git", "rev-parse", "--abbrev-ref", "HEAD"])
+            cls._run_command(["git", "add", "*"])
+ 
+            cls._run_command(["git", "reset", "--hard"])
+             
+            cls._run_command(["git", "merge", "--abort"])
             
-            # HEADの位置を強制的にマージ前の状態に戻す
-            cls._run_command(["git", "reset", "--hard", "HEAD^"])
-            
-            # インデックスとワーキングディレクトリをクリーンな状態に
-            cls._run_command(["git", "clean", "-fd"])
-            
-            print(f"ブランチ {current_branch} のマージ前の状態に戻りました")
+            print(f"マージ前の状態に戻りました")
         except subprocess.CalledProcessError as e:
             print(f"リセット中にエラーが発生しました: {e}")
 
