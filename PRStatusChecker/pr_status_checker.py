@@ -153,13 +153,13 @@ class PRStatusChecker:
         """差分を破棄して前の作業ブランチに戻る"""
         cls._run_command(["git", "reset", "--merge"])
 
-        if (".git/MERGE_MSG").exists():
+        if Path(".git/MERGE_MSG").exists():
             print("MERGE_MSGを削除します。")
             cls._run_command(["rm", "-rf", ".git/MERGE_MSG"])
-        if (".git/MERGE_HEAD").exists():
+        if Path(".git/MERGE_HEAD").exists():
             print("MERGE_HEADを削除します。")
             cls._run_command(["rm", "-rf", ".git/MERGE_HEAD"])
-        if (".git/MERGE_MODE").exists():
+        if Path(".git/MERGE_MODE").exists():
             print("MERGE_MODEを削除します。")
             cls._run_command(["rm", "-rf", ".git/MERGE_MODE"])
         
