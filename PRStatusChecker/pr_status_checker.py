@@ -155,7 +155,7 @@ class PRStatusChecker:
         result = cls._run_command(["git", "merge", "--abort"])
         print("result :", result)
 
-        files = [Path(".git/MERGE_HEAD"), Path(".git/MERGE_MSG"),Path(".git/MERGE_MODE")]
+        files = [Path("/Users/akaminetaito/Desktop/test/.git/MERGE_HEAD"), Path("/Users/akaminetaito/Desktop/test/.git/MERGE_MSG"),Path("/Users/akaminetaito/Desktop/test/.git/MERGE_MODE")]
         for file in files:
             cls._run_command(["rm", "-rf", str(file)])
 
