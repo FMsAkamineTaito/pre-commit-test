@@ -18,7 +18,7 @@ class PRStatusChecker:
         print("### after #### ")
         print(cls._run_command(["ls", ".git/"]))
 
-        return 0
+        return 1
         # マージ操作中かどうかを確認
         if not cls._is_merging():
             print("現在マージ操作中ではありません。チェックをスキップします。")
