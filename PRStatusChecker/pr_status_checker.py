@@ -153,17 +153,21 @@ class PRStatusChecker:
         """差分を破棄して前の作業ブランチに戻る"""
         print("## マージ前の状態に戻します")
         try:
-            cls._run_command(["git", "add", "*"])
-
-            cls._run_command(["git", "reset", "--mixed", "HEAD"])
+            # 現在の状態を確認
+            status_output = cls._run_command(["git", "status"])
             
-            # 次にワーキングディレクトリの変更を取り消し
-            cls._run_command(["git", "checkout", "."])
-            
-            # マージを中止
-            cls._run_command(["git", "merge", "--abort"])
-
+            # マージコミット待ちの状態かどうかを確認
+            if "All conflicts fixed but you are still merging" in status_output:
+                # マージコミット待ちの状態では、強制的にマージ前の状態に戻す
+                cls._run_command(["git", "reset", "--hard", "ORIG_HEAD"])
+            else:
+                # 通常のマージ中の場合
+                cls._run_command(["git", "merge", "--abort"])
+                
+            # 元のブランチに戻る
             cls._run_command(["git", "checkout", "-"])
+            
+            print("\n## リセット完了")
         except subprocess.CalledProcessError as e:
             print(f"リセット中にエラーが発生しました: {e}")
 
