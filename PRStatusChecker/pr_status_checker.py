@@ -154,10 +154,13 @@ class PRStatusChecker:
         cls._run_command(["git", "reset", "--merge"])
 
         if (os.getcwd() / Path(cls._run_command(["git", "rev-parse", "--git-dir"])) / "MERGE_HEAD").exists():
+            print("MERGE_HEADを削除します。")
             cls._run_command(["rm", "-rf", ".git/MERGE_HEAD"])
         if (os.getcwd() / Path(cls._run_command(["git", "rev-parse", "--git-dir"])) / "MERGE_MSG").exists():
+            print("MERGE_MSGを削除します。")
             cls._run_command(["rm", "-rf", ".git/MERGE_MSG"])
         if (os.getcwd() / Path(cls._run_command(["git", "rev-parse", "--git-dir"])) / "MERGE_MODE").exists():
+            print("MERGE_MODEを削除します。")
             cls._run_command(["rm", "-rf", ".git/MERGE_MODE"])
         
         cls._run_command(["git", "reset","--hard"])
