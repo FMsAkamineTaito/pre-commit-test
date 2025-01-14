@@ -152,8 +152,13 @@ class PRStatusChecker:
     def reset_to_before_merge(cls):
         """差分を破棄して前の作業ブランチに戻る"""
         print("## 元のブランチに戻ります")
-        result = cls._run_command(["git", "reset", "--merge"])
+        result = cls._run_command(["git", "merge", "--abort"])
         print("result :", result)
+
+        files = [Path(".git/MERGE_HEAD"), Path(".git/MERGE_MSG"),Path(".git/MERGE_MODE")]
+        for file in files:
+            cls._run_command(["rm", "-rf", str(file)])
+
         cls._run_command(["git", "checkout", "-"])
 
     @classmethod
