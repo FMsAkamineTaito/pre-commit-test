@@ -151,6 +151,13 @@ class PRStatusChecker:
     @classmethod
     def reset_to_before_merge(cls):
         """差分を破棄して前の作業ブランチに戻る"""
+        if (os.getcwd() / Path(cls._run_command(["git", "rev-parse", "--git-dir"])) / "MERGE_HEAD").exists():
+            cls._run_command(["rm", "-rf", ".git/MERGE_HEAD"])
+        if (os.getcwd() / Path(cls._run_command(["git", "rev-parse", "--git-dir"])) / "MERGE_MSG").exists():
+            cls._run_command(["rm", "-rf", ".git/MERGE_MSG"])
+        if (os.getcwd() / Path(cls._run_command(["git", "rev-parse", "--git-dir"])) / "MERGE_MODE").exists():
+            cls._run_command(["rm", "-rf", ".git/MERGE_MODE"])
+
         cls._run_command(["git", "merge","--abort"])
         cls._run_command(["git", "reset", "--hard"])
         cls._run_command(["git", "checkout", "-"])
