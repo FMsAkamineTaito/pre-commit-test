@@ -153,17 +153,19 @@ class PRStatusChecker:
         """差分を破棄して前の作業ブランチに戻る"""
         print("## マージ前の状態に戻します")
         print("###" ,cls._run_command(["ls", ".git/"]))
+        
+        cls._run_command(["git", "reset", "--merge"])
 
         cls._run_command(["rm", "-rf", ".git/MERGE_HEAD"])
         cls._run_command(["rm", "-rf", ".git/MERGE_MSG"])
         cls._run_command(["rm", "-rf", ".git/MERGE_MODE"])
+        cls._run_command(["rm", "-rf", ".git/AUTO_MERGE"])
 
         print("### after #### ")
         print(cls._run_command(["ls", ".git/"]))
 
-        cls._run_command(["git", "reset", "--merge"])
 
-        # cls._run_command(["git", "checkout", "-"])
+        cls._run_command(["git", "checkout", "-"])
 
     @classmethod
     def is_fms_member(cls, pr_number: str):
