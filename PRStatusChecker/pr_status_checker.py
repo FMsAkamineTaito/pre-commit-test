@@ -153,13 +153,27 @@ class PRStatusChecker:
         """差分を破棄して前の作業ブランチに戻る"""
         print("## マージ前の状態に戻します")
         try:
-            cls._run_command(["git", "checkout", "-"])
-
-            cls._run_command(["git", "merge", "--abort"])
-             
-            cls._run_command(["git", "checkout", "-"])
+            # 現在のブランチ名を取得
+            current_branch = cls._run_command(["git", "rev-parse", "--abbrev-ref", "HEAD"])
+            print(f"現在のブランチ: {current_branch}")
             
-            print(f"マージ前の状態に戻りました")
+            # ステージングされている変更を表示
+            print("\nステージングされている変更:")
+            staged_changes = cls._run_command(["git", "diff", "--cached", "--name-status"])
+            print(staged_changes if staged_changes else "変更なし")
+            
+            # ステージングされていない変更を表示
+            print("\nステージングされていない変更:")
+            unstaged_changes = cls._run_command(["git", "diff", "--name-status"])
+            print(unstaged_changes if unstaged_changes else "変更なし")
+            
+            # マージ関連ファイルの存在確認
+            git_dir = cls._run_command(["git", "rev-parse", "--git-dir"])
+            merge_head = Path(git_dir) / "MERGE_HEAD"
+            merge_msg = Path(git_dir) / "MERGE_MSG"
+            print("\nマージ関連ファイルの状態:")
+            print(f"MERGE_HEAD exists: {merge_head.exists()}")
+            print(f"MERGE_MSG exists: {merge_msg.exists()}")
         except subprocess.CalledProcessError as e:
             print(f"リセット中にエラーが発生しました: {e}")
 
