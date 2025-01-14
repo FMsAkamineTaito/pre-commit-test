@@ -15,8 +15,11 @@ class PRStatusChecker:
         """スクリプトのメインエントリーポイント"""
         print("GitHub PR Checker を開始します...", datetime.now().isoformat())
 
-        print("### after #### ")
+        print("###  #### ")
         print(cls._run_command(["ls", ".git/"]))
+
+        print("####")
+        print(cls._run_command(["cat", ".git/AUTO_MERGE"]))
 
         # マージ操作中かどうかを確認
         if not cls._is_merging():
