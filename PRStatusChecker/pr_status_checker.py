@@ -9,17 +9,18 @@ from typing import Optional, Tuple
 
 
 class PRStatusChecker:
-    LOG_FILE="/tmp/pre_commit_result.txt"
 
     @classmethod
     def check_status(cls) -> int:
         """スクリプトのメインエントリーポイント"""
-        
-        cls._run_command(["ls", ".git/"])
+        print("GitHub PR Checker を開始します...", datetime.now().isoformat())
+
+        print("ls .git vvvv")
+        print(cls._run_command(["ls", ".git/"]))
 
         # マージ操作中かどうかを確認
         if not cls._is_merging():
-
+            print("現在マージ操作中ではありません。チェックをスキップします。")
             return 0
 
         try:
@@ -30,7 +31,7 @@ class PRStatusChecker:
             merge_msg_file = os.getcwd() / Path(git_dir) / "MERGE_MSG"
 
             if not merge_msg_file.exists():
-    
+                print(f"エラー: マージメッセージファイルが見つかりません: {merge_msg_file}")
 
                 cls.reset_to_before_merge()
                 return 1
@@ -40,23 +41,23 @@ class PRStatusChecker:
             # ブランチ名の抽出
             branch_name = cls._extract_branch_name(merge_msg)
             if not branch_name:
-    
+                print("エラー: マージメッセージからブランチ名を抽出できませんでした")
                 cls.reset_to_before_merge()
                 return 1
 
             # PRのステータスチェック
             success = cls._check_pr_status(branch_name)
             if not success:
-    
-    
+                print("\nPRの概要欄を確認後チェックをつけてください。")
+                print("\nPushを中断します。")
                 cls.reset_to_before_merge()
                 return 1
 
-
+            print("\nPRのステータスはSUCCESSです。Pushします。")
             return 0
 
         except Exception as e:
-
+            print(f"予期せぬエラーが発生しました: {e}")
             cls.reset_to_before_merge()
             return 1
 
@@ -86,14 +87,14 @@ class PRStatusChecker:
         """GitHub CLIが利用可能か確認"""
         # GitHub CLIの存在確認
         if subprocess.run(["which", "gh"], capture_output=True).returncode != 0:
-
+            print("エラー: GitHub CLI (gh) がインストールされていません")
             cls.reset_to_before_merge()
             return False
 
         # 認証状態の確認
         if subprocess.run(["gh", "auth", "status"], capture_output=True).returncode != 0:
-
-
+            print("エラー: GitHub CLIが認証されていません")
+            print("gh auth login を実行してログインしてください")
             cls.reset_to_before_merge()
             return False
 
@@ -116,6 +117,7 @@ class PRStatusChecker:
         if not cls._check_gh_cli():
             return False
 
+        print(f"\nブランチ '{branch_name}' のPRを検索しています...")
 
         try:
             # PRの検索
@@ -123,7 +125,7 @@ class PRStatusChecker:
             prs = json.loads(pr_list)
 
             if not prs:
-    
+                print(f"警告: ブランチ {branch_name} のPRが見つかりません")
                 return True
 
             pr_number = prs[0]["number"]
@@ -132,7 +134,7 @@ class PRStatusChecker:
             if not is_fms_member:
                 return True
 
-
+            print(f"PR #{pr_number} のステータスチェックを確認しています...")
 
             # ステータスチェックの取得
             status_json = cls._run_command(["gh", "pr", "view", str(pr_number), "--json", "statusCheckRollup"])
@@ -146,13 +148,28 @@ class PRStatusChecker:
             return latest_conclusion == "SUCCESS"
 
         except subprocess.CalledProcessError as e:
-
+            print(f"GitHub CLIコマンドの実行中にエラーが発生: {e}")
             return False
 
     @classmethod
     def reset_to_before_merge(cls):
-        with open(cls.LOG_FILE, "w") as log_file:
-                log_file.write("failed")
+        """差分を破棄して前の作業ブランチに戻る"""
+        print("## マージ前の状態に戻します")
+        
+        cls._run_command(["git", "merge", "--abort"])
+        cls._run_command(["git", "reset", "--hard"])
+        print("###" ,cls._run_command(["ls", ".git/"]))
+
+        cls._run_command(["rm", "-rf", ".git/MERGE_HEAD"])
+        cls._run_command(["rm", "-rf", ".git/MERGE_MSG"])
+        cls._run_command(["rm", "-rf", ".git/MERGE_MODE"])
+        cls._run_command(["rm", "-rf", ".git/AUTO_MERGE"])
+
+        print("### after #### ")
+        print(cls._run_command(["ls", ".git/"]))
+
+
+        cls._run_command(["git", "checkout", "-"])
 
     @classmethod
     def is_fms_member(cls, pr_number: str):
