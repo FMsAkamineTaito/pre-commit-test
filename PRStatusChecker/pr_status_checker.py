@@ -15,7 +15,7 @@ class PRStatusChecker:
     def check_status(cls) -> int:
         """スクリプトのメインエントリーポイント"""
         
-        cls._run_command(["ls", ".gjt/"])
+        cls._run_command(["ls", ".git/"])
 
         # マージ操作中かどうかを確認
         if not cls._is_merging():
