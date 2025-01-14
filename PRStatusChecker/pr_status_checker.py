@@ -153,23 +153,15 @@ class PRStatusChecker:
         """差分を破棄して前の作業ブランチに戻る"""
         cls._run_command(["git", "reset", "--merge"])
 
-        # Gitディレクトリの確認
-        git_dir = cls._run_command(["git", "rev-parse", "--git-dir"])
-
-        # マージメッセージの読み込みと確認
-        merge_msg_file = os.getcwd() / Path(git_dir) / "MERGE_MSG"
-        merge_head_file = os.getcwd() / Path(git_dir) / "MERGE_HEAD"
-        merge_mode_file = os.getcwd() / Path(git_dir) / "MERGE_MODE"
-
-        if (merge_msg_file).exists():
+        if (".git/MERGE_MSG").exists():
             print("MERGE_MSGを削除します。")
-            cls._run_command(["rm", "-rf", str(merge_msg_file)])
-        if (merge_head_file).exists():
+            cls._run_command(["rm", "-rf", ".git/MERGE_MSG"])
+        if (".git/MERGE_HEAD").exists():
             print("MERGE_HEADを削除します。")
-            cls._run_command(["rm", "-rf", str(merge_head_file)])
-        if (merge_mode_file).exists():
+            cls._run_command(["rm", "-rf", ".git/MERGE_HEAD"])
+        if (".git/MERGE_MODE").exists():
             print("MERGE_MODEを削除します。")
-            cls._run_command(["rm", "-rf", str(merge_mode_file)])
+            cls._run_command(["rm", "-rf", ".git/MERGE_MODE"])
         
         cls._run_command(["git", "reset","--hard"])
 
