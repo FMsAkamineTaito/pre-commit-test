@@ -155,9 +155,8 @@ class PRStatusChecker:
         try:
             cls._run_command(["git", "add", "*"])
  
-            cls._run_command(["git", "reset", "--hard"])
+            cls._run_command(["git", "reset", "--merge"])
              
-            cls._run_command(["git", "merge", "--abort"])
             
             print(f"マージ前の状態に戻りました")
         except subprocess.CalledProcessError as e:
