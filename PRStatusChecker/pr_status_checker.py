@@ -153,9 +153,7 @@ class PRStatusChecker:
         """差分を破棄して前の作業ブランチに戻る"""
         print("## マージ前の状態に戻します")
         try:
-            cls._run_command(["git", "add", "*"])
- 
-            cls._run_command(["git", "reset", "--merge"])
+            cls._run_command(["git", "checkout", "-"])
              
             cls._run_command(["git", "checkout", "-"])
             
