@@ -33,7 +33,7 @@ class PRStatusChecker:
             if not merge_msg_file.exists():
                 print(f"エラー: マージメッセージファイルが見つかりません: {merge_msg_file}")
 
-                cls.reset_to_before_merge()
+                cls.alert_to_invalid_merges()
                 return 1
 
             merge_msg = merge_msg_file.read_text()
@@ -42,7 +42,7 @@ class PRStatusChecker:
             branch_name = cls._extract_branch_name(merge_msg)
             if not branch_name:
                 print("エラー: マージメッセージからブランチ名を抽出できませんでした")
-                cls.reset_to_before_merge()
+                cls.alert_to_invalid_merges()
                 return 1
 
             # PRのステータスチェック
@@ -50,7 +50,7 @@ class PRStatusChecker:
             if not success:
                 print("\nPRの概要欄を確認後チェックをつけてください。")
                 print("\nPushを中断します。")
-                cls.reset_to_before_merge()
+                cls.alert_to_invalid_merges()
                 return 1
 
             print("\nPRのステータスはSUCCESSです。Pushします。")
@@ -58,7 +58,7 @@ class PRStatusChecker:
 
         except Exception as e:
             print(f"予期せぬエラーが発生しました: {e}")
-            cls.reset_to_before_merge()
+            cls.alert_to_invalid_merges()
             return 1
 
     @classmethod
@@ -88,14 +88,14 @@ class PRStatusChecker:
         # GitHub CLIの存在確認
         if subprocess.run(["which", "gh"], capture_output=True).returncode != 0:
             print("エラー: GitHub CLI (gh) がインストールされていません")
-            cls.reset_to_before_merge()
+            cls.alert_to_invalid_merges()
             return False
 
         # 認証状態の確認
         if subprocess.run(["gh", "auth", "status"], capture_output=True).returncode != 0:
             print("エラー: GitHub CLIが認証されていません")
             print("gh auth login を実行してログインしてください")
-            cls.reset_to_before_merge()
+            cls.alert_to_invalid_merges()
             return False
 
         return True
@@ -152,24 +152,11 @@ class PRStatusChecker:
             return False
 
     @classmethod
-    def reset_to_before_merge(cls):
+    def alert_to_invalid_merges(cls):
         """差分を破棄して前の作業ブランチに戻る"""
         print("## マージ前の状態に戻します")
-        
-        cls._run_command(["git", "merge", "--abort"])
-        cls._run_command(["git", "reset", "--hard"])
-        print("###" ,cls._run_command(["ls", ".git/"]))
 
-        cls._run_command(["rm", "-rf", ".git/MERGE_HEAD"])
-        cls._run_command(["rm", "-rf", ".git/MERGE_MSG"])
-        cls._run_command(["rm", "-rf", ".git/MERGE_MODE"])
-        cls._run_command(["rm", "-rf", ".git/AUTO_MERGE"])
-
-        print("### after #### ")
-        print(cls._run_command(["ls", ".git/"]))
-
-
-        cls._run_command(["git", "checkout", "-"])
+        cls._run_command(["git", "checkout", "-"])        
 
     @classmethod
     def is_fms_member(cls, pr_number: str):
