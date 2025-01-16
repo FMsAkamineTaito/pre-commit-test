@@ -145,7 +145,7 @@ class PRStatusChecker:
 
             latest_conclusion = max(status_data, key=lambda x: datetime.fromisoformat(x["completedAt"].replace("Z", ""))).get("conclusion", False)
 
-            return latest_conclusion == "SUCCESS"
+            return not latest_conclusion == "FAILURE"
 
         except subprocess.CalledProcessError as e:
             print(f"GitHub CLIコマンドの実行中にエラーが発生: {e}")
