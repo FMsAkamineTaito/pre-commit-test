@@ -100,6 +100,9 @@ class PRStatusChecker:
     def _is_merging(cls) -> bool:
         """マージ操作中かどうかを確認"""
         try:
+            print("現在のブランチ")
+            print(cls._run_command(["git", "rev-perse", "--abbrev-ref", "HEAD"]))
+
             print("git ファイル内:")
             print(cls._run_command(["ls", ".git/"]))
 
