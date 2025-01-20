@@ -9,14 +9,10 @@ from typing import Optional, Tuple
 
 
 class PRStatusChecker:
-
     @classmethod
     def check_status(cls) -> int:
         """スクリプトのメインエントリーポイント"""
         print("GitHub PR Checker を開始します...", datetime.now().isoformat())
-
-        print("ls .git vvvv")
-        print(cls._run_command(["ls", ".git/"]))
 
         # マージ操作中かどうかを確認
         if not cls._is_merging():
@@ -33,7 +29,7 @@ class PRStatusChecker:
             if not merge_msg_file.exists():
                 print(f"エラー: マージメッセージファイルが見つかりません: {merge_msg_file}")
 
-                cls.alert_to_invalid_merges()
+                cls.reset_to_before_merge()
                 return 1
 
             merge_msg = merge_msg_file.read_text()
@@ -42,7 +38,7 @@ class PRStatusChecker:
             branch_name = cls._extract_branch_name(merge_msg)
             if not branch_name:
                 print("エラー: マージメッセージからブランチ名を抽出できませんでした")
-                cls.alert_to_invalid_merges()
+                cls.reset_to_before_merge()
                 return 1
 
             # PRのステータスチェック
@@ -50,7 +46,7 @@ class PRStatusChecker:
             if not success:
                 print("\nPRの概要欄を確認後チェックをつけてください。")
                 print("\nPushを中断します。")
-                cls.alert_to_invalid_merges()
+                cls.reset_to_before_merge()
                 return 1
 
             print("\nPRのステータスはSUCCESSです。Pushします。")
@@ -58,7 +54,7 @@ class PRStatusChecker:
 
         except Exception as e:
             print(f"予期せぬエラーが発生しました: {e}")
-            cls.alert_to_invalid_merges()
+            cls.reset_to_before_merge()
             return 1
 
     @classmethod
@@ -88,14 +84,14 @@ class PRStatusChecker:
         # GitHub CLIの存在確認
         if subprocess.run(["which", "gh"], capture_output=True).returncode != 0:
             print("エラー: GitHub CLI (gh) がインストールされていません")
-            cls.alert_to_invalid_merges()
+            cls.reset_to_before_merge()
             return False
 
         # 認証状態の確認
         if subprocess.run(["gh", "auth", "status"], capture_output=True).returncode != 0:
             print("エラー: GitHub CLIが認証されていません")
             print("gh auth login を実行してログインしてください")
-            cls.alert_to_invalid_merges()
+            cls.reset_to_before_merge()
             return False
 
         return True
@@ -143,7 +139,9 @@ class PRStatusChecker:
             if not status_data:
                 return True
 
-            latest_conclusion = max(status_data, key=lambda x: datetime.fromisoformat(x["completedAt"].replace("Z", ""))).get("conclusion", False)
+            latest_conclusion = max(
+                status_data, key=lambda x: datetime.fromisoformat(x["completedAt"].replace("Z", ""))
+            ).get("conclusion", False)
 
             return not latest_conclusion == "FAILURE"
 
@@ -152,16 +150,32 @@ class PRStatusChecker:
             return False
 
     @classmethod
-    def alert_to_invalid_merges(cls):
+    def reset_to_before_merge(cls):
         """差分を破棄して前の作業ブランチに戻る"""
-        print("## マージ前の状態に戻します")
+        print("git reset --mergeを実行してgit statusリセット後再試行してください。")
 
-        cls._run_command(["git", "checkout", "-"])        
+        git_dir = cls._run_command(["git", "rev-parse", "--git-dir"])
+
+        # マージメッセージの読み込みと確認
+        merge_msg_file = os.getcwd() / Path(git_dir) / "MERGE_MSG"
+        merge_head_file = os.getcwd() / Path(git_dir) / "MERGE_HEAD"
+        merge_mode_file = os.getcwd() / Path(git_dir) / "MERGE_MODE"
+
+        print(merge_msg_file)
+        print("is exist :", merge_msg_file.exists())
+
+        cls._run_command(["rm", "-rf", str(merge_msg_file)])
+        cls._run_command(["rm", "-rf", str(merge_head_file)])
+        cls._run_command(["rm", "-rf", str(merge_mode_file)])
+
+        cls._run_command(["git", "reset", "--merge"])
+
+        cls._run_command(["git", "checkout", "-"])
 
     @classmethod
     def is_fms_member(cls, pr_number: str):
         """PR作成者がFMs社員か判定"""
-        results = cls._run_command(["gh", "pr", "view", pr_number, "--json", "commits"])        
+        results = cls._run_command(["gh", "pr", "view", pr_number, "--json", "commits"])
         commits = json.loads(results)["commits"]
 
         commit_author_emails = []
