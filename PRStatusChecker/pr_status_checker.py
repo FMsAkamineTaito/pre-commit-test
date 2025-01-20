@@ -21,14 +21,18 @@ class PRStatusChecker:
         # マージメッセージの読み込みと確認
         merge_head_file = os.getcwd() / Path(git_dir) / "MERGE_HEAD"
 
+        now_branch = cls._run_command(["git", "rev-parse", "--abbrev-ref"])
+
+        print("現在のブランチ: ", now_branch)
+
+        git_files = cls._run_command(["ls", ".git/"])
+
+        print(".git内のfiles: ", git_files)
+
         if merge_head_file.exists():
             head = merge_head_file.read_text()
 
             print("merge head file :", head)
-
-            now_branch = cls._run_command(["git", "rev-parse", "--abbrev-ref"])
-
-            print("現在のブランチ: ", now_branch)
 
             x_branch = cls._run_command(["git", "branch", "--contains", head])
 
