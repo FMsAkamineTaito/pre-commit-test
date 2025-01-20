@@ -101,7 +101,7 @@ class PRStatusChecker:
         """マージ操作中かどうかを確認"""
         try:
             print("現在のブランチ")
-            print(cls._run_command(["git", "rev-perse", "--abbrev-ref", "HEAD"]))
+            print(cls._run_command(["git", "rev-parse", "--abbrev-ref", "HEAD"]))
 
             print("git ファイル内:")
             print(cls._run_command(["ls", ".git/"]))
