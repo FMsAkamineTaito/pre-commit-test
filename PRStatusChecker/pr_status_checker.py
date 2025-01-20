@@ -103,6 +103,9 @@ class PRStatusChecker:
             print("git ファイル内:")
             print(cls._run_command(["ls", ".git/"]))
 
+            print("コミットメッセージ")
+            print(cls._run_command(["cat", ".git/COMMIT_EDITMSG"]))
+
             git_dir = cls._run_command(["git", "rev-parse", "--git-dir"])
             merge_head_file = Path(git_dir) / "MERGE_HEAD"
             return merge_head_file.exists()
