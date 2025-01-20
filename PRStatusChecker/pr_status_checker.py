@@ -14,34 +14,6 @@ class PRStatusChecker:
         """スクリプトのメインエントリーポイント"""
         print("GitHub PR Checker を開始します...", datetime.now().isoformat())
 
-        print("###")
-
-        git_dir = cls._run_command(["git", "rev-parse", "--git-dir"])
-
-        # マージメッセージの読み込みと確認
-        merge_head_file = os.getcwd() / Path(git_dir) / "MERGE_HEAD"
-
-        now_branch = cls._run_command(["git", "rev-parse", "--abbrev-ref"])
-
-        print("現在のブランチ: ", now_branch)
-
-        git_files = cls._run_command(["ls", ".git/"])
-
-        print(".git内のfiles: ", git_files)
-
-        if merge_head_file.exists():
-            head = merge_head_file.read_text()
-
-            print("merge head file :", head)
-
-            x_branch = cls._run_command(["git", "branch", "--contains", head])
-
-            print("headコミットを含むブランチ:", x_branch)
-        else:
-            print("head fileがありません。")
-
-        return 0
-
         # マージ操作中かどうかを確認
         if not cls._is_merging():
             print("現在マージ操作中ではありません。チェックをスキップします。")
