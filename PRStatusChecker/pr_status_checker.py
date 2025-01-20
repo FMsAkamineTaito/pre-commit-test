@@ -23,16 +23,18 @@ class PRStatusChecker:
 
         if merge_head_file.exists():
             head = merge_head_file.read_text()
+
+            print("merge head file :", head)
+
+            now_branch = cls._run_command(["git", "rev-parse", "--abbrev-ref"])
+
+            print("現在のブランチ: ", now_branch)
+
+            x_branch = cls._run_command(["git", "branch", "--contains", head])
+
+            print("headコミットを含むブランチ:", x_branch)
         else:
-            head = "head fileがありません。"
-
-        print("merge head file :", head)
-
-        now_branch = cls._run_command(["git", "rev-parse", "--abbrev-ref"])
-
-        print("現在のブランチ: ", now_branch)
-
-        x_branch = cls._run_command(["git", "branch", "--contains", head])
+            print("head fileがありません。")
 
         return 0
 
