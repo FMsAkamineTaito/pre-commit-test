@@ -44,7 +44,7 @@ class PRStatusChecker:
     @classmethod
     def _run_command(cls, command: list) -> str:
         """コマンドを実行して結果を返す"""
-        result = subprocess.run(command, capture_output=True, text=True, check=True)
+        result = subprocess.run(command, capture_output=True, text=True, check=True, shell=True)
         return result.stdout.strip()
 
     @classmethod
