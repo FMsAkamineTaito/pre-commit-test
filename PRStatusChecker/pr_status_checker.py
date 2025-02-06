@@ -10,6 +10,8 @@ from pathlib import Path
 class PRStatusChecker:
     @classmethod
     def check_pr_status(cls) -> int:
+        print(f"環境変数: {os.environ['SHELL']}")
+
         print("GitHub PR Checker を開始します...")
         try:
             # ブランチ名の抽出
