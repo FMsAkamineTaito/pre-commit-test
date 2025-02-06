@@ -9,6 +9,7 @@ from pathlib import Path
 
 class PRStatusChecker:
     docker_gh_base_command = ["docker", "exec", "-i", "github-cli", "gh"]
+    repository = "FMsAkamineTaitoTest"
 
     @classmethod
     def check_pr_status(cls) -> int:
@@ -105,7 +106,17 @@ class PRStatusChecker:
         try:
             # PRの検索
             pr_list = cls._run_command(
-                [*cls.docker_gh_base_command, "pr", "list", "--head", branch_name, "--json", "number"]
+                [
+                    *cls.docker_gh_base_command,
+                    "pr",
+                    "list",
+                    "--repo",
+                    cls.repository,
+                    "--head",
+                    branch_name,
+                    "--json",
+                    "number",
+                ]
             )
             prs = json.loads(pr_list)
 
@@ -120,7 +131,16 @@ class PRStatusChecker:
 
             # ステータスチェックの取得
             status_json = cls._run_command(
-                [*cls.docker_gh_base_command, "pr", "view", str(pr_number), "--json", "statusCheckRollup"]
+                [
+                    *cls.docker_gh_base_command,
+                    "pr",
+                    "--repo",
+                    cls.repository,
+                    "view",
+                    str(pr_number),
+                    "--json",
+                    "statusCheckRollup",
+                ]
             )
             status_logs = json.loads(status_json).get("statusCheckRollup", None)
 
