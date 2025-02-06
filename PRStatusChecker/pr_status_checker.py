@@ -104,7 +104,7 @@ class PRStatusChecker:
 
         try:
             # PRの検索
-            command = ["gh", "pr", "list", "--head", branch_name, "--json", "number"]
+            command = ["gh", "pr", "--repo", "FMsAkamineTaito/test" "list", "--head", branch_name, "--json", "number"]
             pr_list = subprocess.run(
                 " ".join(command), capture_output=True, text=True, check=True, shell=True, executable='/bin/zsh'
             ).stdout.strip()
@@ -121,7 +121,16 @@ class PRStatusChecker:
             print(f"PR #{pr_number} のステータスチェックを確認しています...")
 
             # ステータスチェックの取得
-            command = ["gh", "pr", "view", str(pr_number), "--json", "statusCheckRollup"]
+            command = [
+                "gh",
+                "pr",
+                "--repo",
+                "FMsAkamineTaito/test",
+                "view",
+                str(pr_number),
+                "--json",
+                "statusCheckRollup",
+            ]
             # status_json = cls._run_command(["zsh", "gh", "pr", "view", str(pr_number), "--json", "statusCheckRollup"])
             status_json = subprocess.run(
                 " ".join(command), capture_output=True, text=True, check=True, shell=True, executable='/bin/zsh'
