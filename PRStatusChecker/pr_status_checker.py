@@ -104,7 +104,7 @@ class PRStatusChecker:
 
         try:
             # PRの検索
-            command = ["gh", "pr", "--repo", "FMsAkamineTaito/test" "list", "--head", branch_name, "--json", "number"]
+            command = ["gh", "pr", "--repo", "FMsAkamineTaito/test", "list", "--head", branch_name, "--json", "number"]
             pr_list = subprocess.run(
                 " ".join(command), capture_output=True, text=True, check=True, shell=True, executable='/bin/zsh'
             ).stdout.strip()
