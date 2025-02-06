@@ -8,8 +8,6 @@ from pathlib import Path
 
 
 class PRStatusChecker:
-    docker_gh_base_command = ["docker", "exec", "-i", "github-cli", "gh"]
-
     @classmethod
     def check_pr_status(cls) -> int:
         print("GitHub PR Checker を開始します...")
@@ -79,13 +77,13 @@ class PRStatusChecker:
         else:
             exist_check_command = "where.exe"
 
-        if subprocess.run([*cls.docker_gh_base_command, "--version"], capture_output=True).returncode != 0:
+        if subprocess.run([exist_check_command, "gh"], capture_output=True).returncode != 0:
             print("エラー: GitHub CLI (gh) がインストールされていません")
             cls.reset_to_before_merge()
             return False
 
         # 認証状態の確認
-        if subprocess.run([*cls.docker_gh_base_command, "auth", "status"], capture_output=True).returncode != 0:
+        if subprocess.run(["gh", "auth", "status"], capture_output=True).returncode != 0:
             print("エラー: GitHub CLIが認証されていません")
             print("gh auth login を実行してログインしてください")
             cls.reset_to_before_merge()
@@ -104,9 +102,7 @@ class PRStatusChecker:
 
         try:
             # PRの検索
-            pr_list = cls._run_command(
-                [*cls.docker_gh_base_command, "pr", "list", "--head", branch_name, "--json", "number"]
-            )
+            pr_list = cls._run_command(["gh", "pr", "list", "--head", branch_name, "--json", "number"])
             prs = json.loads(pr_list)
 
             if not prs:
@@ -119,9 +115,7 @@ class PRStatusChecker:
             print(f"PR #{pr_number} のステータスチェックを確認しています...")
 
             # ステータスチェックの取得
-            status_json = cls._run_command(
-                [*cls.docker_gh_base_command, "pr", "view", str(pr_number), "--json", "statusCheckRollup"]
-            )
+            status_json = cls._run_command(["gh", "pr", "view", str(pr_number), "--json", "statusCheckRollup"])
             status_logs = json.loads(status_json).get("statusCheckRollup", None)
 
             if not status_logs:
