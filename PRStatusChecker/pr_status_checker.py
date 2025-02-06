@@ -104,7 +104,9 @@ class PRStatusChecker:
 
         try:
             # PRの検索
-            pr_list = cls._run_command(["gh", "pr", "list", "--head", branch_name, "--json", "number"])
+            command = ["gh", "pr", "list", "--head", branch_name, "--json", "number"]
+            pr_list = subprocess.run(command, capture_output=True, text=True, check=True, shell=True).stdout.strip()
+            # pr_list = cls._run_command(["gh", "pr", "list", "--head", branch_name, "--json", "number"])
             prs = json.loads(pr_list)
 
             if not prs:
@@ -117,7 +119,9 @@ class PRStatusChecker:
             print(f"PR #{pr_number} のステータスチェックを確認しています...")
 
             # ステータスチェックの取得
-            status_json = cls._run_command(["gh", "pr", "view", str(pr_number), "--json", "statusCheckRollup"])
+            command = ["gh", "pr", "view", str(pr_number), "--json", "statusCheckRollup"]
+            # status_json = cls._run_command(["gh", "pr", "view", str(pr_number), "--json", "statusCheckRollup"])
+            status_json = subprocess.run(command, capture_output=True, text=True, check=True, shell=True).stdout.strip()
             status_logs = json.loads(status_json).get("statusCheckRollup", None)
 
             if not status_logs:
