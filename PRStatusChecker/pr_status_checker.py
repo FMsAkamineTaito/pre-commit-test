@@ -79,17 +79,17 @@ class PRStatusChecker:
         else:
             exist_check_command = "where.exe"
 
-        if subprocess.run([exist_check_command, "gh"], capture_output=True).returncode != 0:
-            print("エラー: GitHub CLI (gh) がインストールされていません")
-            cls.reset_to_before_merge()
-            return False
-
-        # 認証状態の確認
-        if subprocess.run(["gh", "auth", "status"], capture_output=True).returncode != 0:
-            print("エラー: GitHub CLIが認証されていません")
-            print("gh auth login を実行してログインしてください")
-            cls.reset_to_before_merge()
-            return False
+        # if subprocess.run([exist_check_command, "gh"], capture_output=True).returncode != 0:
+        #     print("エラー: GitHub CLI (gh) がインストールされていません")
+        #     cls.reset_to_before_merge()
+        #     return False
+        #
+        # # 認証状態の確認
+        # if subprocess.run(["gh", "auth", "status"], capture_output=True).returncode != 0:
+        #     print("エラー: GitHub CLIが認証されていません")
+        #     print("gh auth login を実行してログインしてください")
+        #     cls.reset_to_before_merge()
+        #     return False
 
         return True
 
